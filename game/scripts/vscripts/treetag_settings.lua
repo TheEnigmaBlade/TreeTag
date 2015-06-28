@@ -1,0 +1,10 @@
+START_GOLD_GOOD		= 100
+START_GOLD_BAD		= 100
+
+START_LVLS_GOOD		= 0
+START_LVLS_BAD		= 1
+
+MESSAGE_HEADSTART_GOOD	= "QUICKLY! RUN AND HIDE!"
+MESSAGE_HEADSTART_BAD	= " "
+MESSAGE_START_GOOD		= "Watch out, here they come!"
+MESSAGE_START_BAD		= "Those pesky trees have run off. Go catch them!"
