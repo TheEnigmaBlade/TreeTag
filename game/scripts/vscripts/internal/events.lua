@@ -27,13 +27,19 @@ function GameMode:_OnGameRulesStateChange(keys)
 	end
 end
 
--- An NPC has spawned somewhere in game.	This includes heroes
+-- An NPC has spawned somewhere in game, including heroes
 function GameMode:_OnNPCSpawned(keys)
 	local npc = EntIndexToHScript(keys.entindex)
 
-	if npc:IsRealHero() and npc.bFirstSpawned == nil then
-		npc.bFirstSpawned = true
-		GameMode:OnHeroInGame(npc)
+	if npc:IsRealHero() then
+		if npc.bFirstSpawned == nil then
+			npc.bFirstSpawned = true
+			GameMode:OnHeroInGame(npc)
+		else
+			GameMode:OnHeroRespawn(npc)
+		end
+	else
+		GameMode:OnUnitInGame(npc)
 	end
 end
 
@@ -49,7 +55,9 @@ function GameMode:_OnEntityKilled(keys)
 	end
 
 	if killedUnit:IsRealHero() then
-		DebugPrint("KILLED, KILLER: " .. killedUnit:GetName() .. " -- " .. killerEntity:GetName())
+		GameMode:OnHeroDeath(killedUnit, killerEntity)
+		
+		--DebugPrint("KILLED, KILLER: " .. killedUnit:GetName() .. " -- " .. killerEntity:GetName())
 		if END_GAME_ON_KILLS and GetTeamHeroKills(killerEntity:GetTeam()) >= KILLS_TO_END_GAME_FOR_TEAM then
 			GameRules:SetSafeToLeave(true)
 			GameRules:SetGameWinner(killerEntity:GetTeam())

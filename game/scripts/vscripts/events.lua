@@ -1,6 +1,3 @@
--- This file contains all barebones-registered events and has already set up the passed-in parameters for your use.
--- Do not remove the GameMode:_Function calls in these events as it will mess with the internal barebones systems.
-
 -- A tree was cut down by tango, quelling blade, etc
 function GameMode:OnTreeCut(keys)
 	--DebugPrint('[TREETAG] OnTreeCut')
@@ -20,6 +17,7 @@ function GameMode:OnDisconnect(keys)
 	local reason = keys.reason
 	local userid = keys.userid
 end
+
 -- The overall game state has changed
 function GameMode:OnGameRulesStateChange(keys)
 	--DebugPrint("[BAREBONES] GameRules State Changed")
@@ -29,9 +27,9 @@ function GameMode:OnGameRulesStateChange(keys)
 	GameMode:_OnGameRulesStateChange(keys)
 
 	local newState = GameRules:State_Get()
-	if newState == DOTA_GAMERULES_STATE_HERO_SELECTION then
+	--[[if newState == DOTA_GAMERULES_STATE_HERO_SELECTION then
 		DebugPrint("[TREETAG] Hero selection started")
-	end
+	end]]
 end
 
 -- An NPC has spawned somewhere in game.	This includes heroes
@@ -43,20 +41,6 @@ function GameMode:OnNPCSpawned(keys)
 	GameMode:_OnNPCSpawned(keys)
 
 	local npc = EntIndexToHScript(keys.entindex)
-end
-
--- An entity somewhere has been hurt.	This event fires very often with many units so don't do too many expensive
--- operations here
-function GameMode:OnEntityHurt(keys)
-	--DebugPrint("[BAREBONES] Entity Hurt")
-	--DebugPrintTable(keys)
-
-	local damagebits = keys.damagebits -- This might always be 0 and therefore useless
-	local entCause = nil
-	if keys.entindex_attacker ~= nil then
-		entCause = EntIndexToHScript(keys.entindex_attacker)
-	end
-	local entVictim = EntIndexToHScript(keys.entindex_killed)
 end
 
 -- An item was picked up off the ground
@@ -215,22 +199,20 @@ end
 function GameMode:OnEntityKilled(keys)
 	--DebugPrint('[BAREBONES] OnEntityKilled Called')
 	--DebugPrintTable(keys)
-
+	
 	GameMode:_OnEntityKilled(keys)
 	
-
 	-- The Unit that was Killed
 	local killedUnit = EntIndexToHScript(keys.entindex_killed)
 	-- The Killing entity
 	local killerEntity = nil
-
 	if keys.entindex_attacker ~= nil then
 		killerEntity = EntIndexToHScript(keys.entindex_attacker)
 	end
-
+	
 	local damagebits = keys.damagebits -- This might always be 0 and therefore useless
 
-	-- Put code here to handle when an entity gets killed
+	CreateDeathParticles(killedUnit)
 end
 
 -- This function is called 1 to 2 times as the player connects initially but before they

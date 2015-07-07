@@ -1,12 +1,52 @@
 "DOTAAbilities"
 {
+	"item_modifier_master"
+	{
+		"ID"							"1010"
+		"BaseClass"						"item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		
+		"AbilityCastRange"				"100"
+		"AbilityCastPoint"				"0.0"
+		
+		"Modifiers"
+		{
+			"is_building"
+			{
+				"Passive"		"1"
+				"IsHidden"		"1"
+				
+				"States"
+				{
+					"MODIFIER_STATE_SPECIALLY_DENIABLE"	"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+			
+			"is_dummy_hero"
+			{
+				"Passive"		"1"
+				"IsHidden"		"1"
+				
+				"States"
+				{
+					"MODIFIER_STATE_SPECIALLY_DENIABLE"	"MODIFIER_STATE_VALUE_ENABLED"
+					"MODIFIER_STATE_NO_HEALTH_BAR"		"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+		}
+	}
+	
+	//////////////
+	// Building //
+	//////////////
+	
 	"item_build_gold_gen"
 	{
-		"ID"						"1001"
+		"ID"						"1100"
 		"BaseClass"					"item_datadriven"
-		"AbilityTextureName"		"sniper_take_aim"
+		"AbilityTextureName"		"item_hand_of_midas"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT"
-		"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_2"
+		"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_3"
 		"AnimationPlaybackRate"		"2.0"
 		
 		"AbilityCastRange"			"120"
@@ -18,10 +58,216 @@
 		"ItemRequiresCharges"		"0"
 		"ItemShareability"			"ITEM_NOT_SHAREABLE"
 		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"25"
+			}
+		}
+		
 		"Building"
 		{
 			"UnitName"				"npc_building_gold_gen"
-			//"SnapToGrid"			"1"
+			
+			"PlayerCanControl"		"1"
+			"AnimateHealth"			"1"
+			"AnimateScale"			"1"
+			"ScaleStart"			"0.2"
+		}
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"		"abilities/building.lua"
+				"Function"			"Build"
+				"Target"			"POINT"
+			}
+		}
+	}
+	
+	"item_build_scout_tower"
+	{
+		"ID"						"1200"
+		"BaseClass"					"item_datadriven"
+		"AbilityTextureName"		"item_ward_observer"
+		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_3"
+		"AnimationPlaybackRate"		"2.0"
+		
+		"AbilityCastRange"			"120"
+		"AbilityCastPoint"			"0.0"
+		"AbilityCooldown"			"0.1"
+		
+		"ItemDroppable"				"0"
+		"ItemSellable"				"0"
+		"ItemRequiresCharges"		"0"
+		"ItemShareability"			"ITEM_NOT_SHAREABLE"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"25"
+			}
+		}
+		
+		"Building"
+		{
+			"UnitName"				"npc_building_scout_tower"
+			
+			"PlayerCanControl"		"1"
+			"AnimateHealth"			"1"
+			"AnimateScale"			"1"
+			"ScaleStart"			"0.2"
+		}
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"		"abilities/building.lua"
+				"Function"			"Build"
+				"Target"			"POINT"
+			}
+		}
+	}
+	
+	"item_build_wall"
+	{
+		"ID"						"1300"
+		"BaseClass"					"item_datadriven"
+		"AbilityTextureName"		"item_place_building"
+		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_3"
+		"AnimationPlaybackRate"		"2.0"
+		
+		"AbilityCastRange"			"120"
+		"AbilityCastPoint"			"0.0"
+		"AbilityCooldown"			"0.1"
+		
+		"ItemDroppable"				"0"
+		"ItemSellable"				"0"
+		"ItemRequiresCharges"		"0"
+		"ItemShareability"			"ITEM_NOT_SHAREABLE"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"50"
+			}
+		}
+		
+		"Building"
+		{
+			"UnitName"				"npc_building_wall"
+			
+			"PlayerCanControl"		"1"
+			"AnimateHealth"			"1"
+			"AnimateScale"			"1"
+			"ScaleStart"			"0.2"
+		}
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"		"abilities/building.lua"
+				"Function"			"Build"
+				"Target"			"POINT"
+			}
+		}
+	}
+	
+	"item_build_basic_tower"
+	{
+		"ID"						"1400"
+		"BaseClass"					"item_datadriven"
+		"AbilityTextureName"		"item_tombstone"
+		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_3"
+		"AnimationPlaybackRate"		"2.0"
+		
+		"AbilityCastRange"			"120"
+		"AbilityCastPoint"			"0.0"
+		"AbilityCooldown"			"0.1"
+		
+		"ItemDroppable"				"0"
+		"ItemSellable"				"0"
+		"ItemRequiresCharges"		"0"
+		"ItemShareability"			"ITEM_NOT_SHAREABLE"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"100"
+			}
+			
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"wood_cost"			"50"
+			}
+		}
+		
+		"Building"
+		{
+			"UnitName"				"npc_building_basic_tower"
+			
+			"PlayerCanControl"		"1"
+			"AnimateHealth"			"1"
+			"AnimateScale"			"1"
+			"ScaleStart"			"0.2"
+		}
+		
+		"OnSpellStart"
+		{
+			"RunScript"
+			{
+				"ScriptFile"		"abilities/building.lua"
+				"Function"			"Build"
+				"Target"			"POINT"
+			}
+		}
+	}
+	
+	"item_build_barracks"
+	{
+		"ID"						"1500"
+		"BaseClass"					"item_datadriven"
+		"AbilityTextureName"		"item_necronomicon_3"
+		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT"
+		"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_3"
+		"AnimationPlaybackRate"		"2.0"
+		
+		"AbilityCastRange"			"120"
+		"AbilityCastPoint"			"0.0"
+		"AbilityCooldown"			"0.1"
+		
+		"ItemDroppable"				"0"
+		"ItemSellable"				"0"
+		"ItemRequiresCharges"		"0"
+		"ItemShareability"			"ITEM_NOT_SHAREABLE"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"200"
+			}
+		}
+		
+		"Building"
+		{
+			"UnitName"				"npc_building_barracks"
 			
 			"PlayerCanControl"		"1"
 			"AnimateHealth"			"1"

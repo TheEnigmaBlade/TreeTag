@@ -1,3 +1,11 @@
+-- Loading KV files
+
+function LoadKeyValuesWrapped(file)
+	return KV_Wrap(LoadKeyValues(file))
+end
+
+-- Wrapper and functions
+
 function KV_Wrap(table)
 	if table == nil then
 		return nil

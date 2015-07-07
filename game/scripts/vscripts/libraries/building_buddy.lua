@@ -12,12 +12,12 @@ BB = BuildingBuddy
 
 function BuildingBuddy:Init()
 	BB:PrintH("Initializing Building Buddy")
-	BuildingBuddy.abilities = _CreateBuildingAbilityTable()
-	BuildingBuddy.units = _CreateBuildingUnitTable()
+	BuildingBuddy.abilities = BuildingBuddy:_CreateBuildingAbilityTable()
+	BuildingBuddy.units = BuildingBuddy:_CreateBuildingUnitTable()
 end
 
 -- Creates a table of building information by ability name
-function _CreateBuildingAbilityTable()
+function BuildingBuddy:_CreateBuildingAbilityTable()
 	BB:PrintH("Creating building ability table")
 	abilityTable = {}
 	
@@ -46,7 +46,7 @@ function _CreateBuildingAbilityTable()
 end
 
 -- Creates a table of building information by unit name
-function _CreateBuildingUnitTable()
+function BuildingBuddy:_CreateBuildingUnitTable()
 	BB:PrintH("Creating building ability table")
 	
 	units = LoadKeyValues("scripts/npc/npc_units_custom.txt")
@@ -55,7 +55,8 @@ function _CreateBuildingUnitTable()
 	for name, unit in pairs(units) do
 		if IsTable(unit) then
 			local baseClass = unit["BaseClass"]
-			if baseClass ~= nil and baseClass == "npc_dota_building" then
+			local isBuilding = unit["IsBuilding"]
+			if baseClass ~= nil and isBuilding ~= nil then
 				unitTable[tostring(name)] = unit
 			end
 		end
@@ -70,6 +71,10 @@ end
 -------------------
 
 function BuildingBuddy:BuildBuilding(keys)
+	if BuildingBuddy.abilities == nil then
+		BuildingBuddy:Init()
+	end
+	
 	-- Callbacks
 	function keys:OnConstructionCompleted(callback)
 		keys.onConstructionCompleted = callback
@@ -115,46 +120,64 @@ function BuildingBuddy:BuildBuilding(keys)
 	-- Check ability costs
 	local goldCost = GetPriorityValue(abilityInfo, "GoldCost", unitInfo, "GoldCost", "number", 0)
 	if goldCost > PlayerResource:GetGold(playerId) then
-		return
+		return "Not Enough Gold"
+	end
+	local woodCost = GetPriorityValue(abilityInfo, "WoodCost", unitInfo, "WoodCost", "number", 0)
+	if woodCost > GetPlayerWood(playerId) then
+		return "Not Enough Wood"
 	end
 	
 	-- Check build location
+	---- GridNav
 	if GridNav:IsBlocked(target) or not GridNav:IsTraversable(target) then
-		return
+		return "Can't Build There"
 	end
-	
-	local buildRadius = GetPriorityValue(abilityInfo, "Size", unitInfo, "CollisionSize", "float", 80)
-	local closestBuilding = Entities:FindByClassnameNearest("npc_dota_building", target, buildRadius)
+	---- Other buildings
+	local buildRadius = GetPriorityValue(abilityInfo, "Radius", unitInfo, "HullRadius", "float", 80)
+	local closestBuilding = Entities:FindByClassnameNearest("npc_dota_creature", target, 1.5*buildRadius)
 	if closestBuilding ~= nil then
-		return
+		return "Can't Build There"
+	end
+	---- No build zones
+	local noBuildZones = Entities:FindAllByClassnameWithin("trigger_no_wards", target, buildRadius)
+	BB:PrintH("No-build zones: " .. tostring(table.getn(noBuildZones)))
+	BB:PrintTable(noBuildZones)
+	if noBuildZones ~= nil and table.getn(noBuildZones) > 0 then
+		return "Can't Build There"
 	end
 	
 	-- Create unit and start building
-	local unit = _CreateBuildingUnit(abilityInfo, target, player)
+	local unit = BuildingBuddy:_CreateBuildingUnit(abilityInfo, target, player)
 	if unit ~= nil then
+		local attackCapibility = unit:GetAttackCapability()
+		unit:SetAttackCapability(DOTA_UNIT_CAP_NO_ATTACK)
+		
 		-- Remove costs
 		PlayerResource:SpendGold(playerId, goldCost, DOTA_ModifyGold_AbilityCost)
+		ChangePlayerWood(player, -woodCost)
 		
 		-- Start da timers
 		local buildTime = GetPriorityValue(abilityInfo, "BuildTime", unitInfo, "BuildTime", "number", 2)
+		BB:Print("Build time: " .. tostring(buildTime), 1)
 		
 		Timers:CreateTimer(buildTime, function()
+			unit:SetAttackCapability(attackCapibility)
 			keys.onConstructionCompleted(unit)
 		end)
 		
-		_AnimateBuilding(unit, unitInfo, abilityInfo, buildTime)
+		BuildingBuddy:_AnimateBuilding(unit, unitInfo, abilityInfo, buildTime)
 	end
 	return unit
 end
 
-function _CreateBuildingUnit(abilityInfo, location, player)
+function BuildingBuddy:_CreateBuildingUnit(abilityInfo, location, player)
 	BB:PrintH("Creating building unit")
 	
 	local unitName = abilityInfo:GetValue("UnitName", "string")
 	local playerHero = player:GetAssignedHero()
 	local playerId = player:GetPlayerID()
 	local playerTeam = PlayerResource:GetTeam(playerId)
-	local playerCanControl = abilityInfo:GetValue(playerId)
+	--local playerCanControl = abilityInfo:GetValue(playerId)
 	
 	local unit = CreateUnitByName(unitName, location, false, playersHero, nil, playerTeam)
 	if unit == nil then
@@ -167,7 +190,7 @@ function _CreateBuildingUnit(abilityInfo, location, player)
 	return unit
 end
 
-function _AnimateBuilding(unit, unitInfo, abilityInfo, buildTime)
+function BuildingBuddy:_AnimateBuilding(unit, unitInfo, abilityInfo, buildTime)
 	BB:PrintH("Animating building unit")
 	
 	local animateScale = abilityInfo:GetValue("AnimateScale", "bool", true)
@@ -193,7 +216,7 @@ function _AnimateBuilding(unit, unitInfo, abilityInfo, buildTime)
 		unit.buildScaleTimer = DoUniqueString("scale")
 		Timers:CreateTimer(unit.buildScaleTimer, {callback = function()
 			-- Check if done
-			if GameRules:GetGameTime() >= completeTime then
+			if GameRules:GetGameTime() >= completeTime or not unit:IsAlive() then
 				unit:SetModelScale(scaleEnd)
 				return nil
 			end

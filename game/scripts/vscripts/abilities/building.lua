@@ -2,17 +2,29 @@ function Build(keys)
 	-- Returns the new building (unit) or 'nil' if it couldn't be built
 	local building = BuildingBuddy:BuildBuilding(keys)
 	if building ~= nil then
+		if type(building) == "string" then
+			local player = keys.caster:GetPlayerOwner()
+			ErrorMessage(building, player)
+			return
+		end
+		
 		-- Done callback
 		keys:OnConstructionCompleted(function(building)
 			BuildingBuddy:PrintH("Completed construction of " .. building:GetUnitName())
 			
 			building.passivesEnabled = true
+			CreateLifeParticles(building)
 		end)
 		
 		-- Building started
 		BuildingBuddy:PrintH("Started construction of " .. building:GetUnitName())
 		building.passivesEnabled = false
 		
+		-- Remove invulnerability (I hope)
+		--building:SetInvulnCount(0)
+		
+		-- Make sure the spawner isn't inside the building
+		-- Has the possibility of physics glitch exploits, but good enough for now
 		FindClearSpaceForUnit(keys.caster, keys.caster:GetAbsOrigin(), true)
 	end
 end
@@ -40,6 +52,13 @@ function UpgradeBuilding(keys)
 	end
 	BB:Print("Upgrade level: " .. tostring(building.upgradeLevel), 1)
 	
+	-- Check for a unit swap
+	local replaceUnit = keys.ReplaceUnit
+	if replaceUnit ~= nil then
+		_ReplaceUnit(building, replaceUnit)
+		return
+	end
+	
 	-- Upgrade stuff if possible
 	_UpgradeBuildingInfo(building, unitInfo)
 	
@@ -58,6 +77,13 @@ function UpgradeBuilding(keys)
 		else
 			building:AddAbility("barebones_empty1")
 		end
+		
+		-- Add ability if required
+		local newAbilityName = keys.AddAbility
+		if newAbilityName ~= nil then
+			BB:Print("Adding ability: " .. tostring(newAbilityName), 1)
+			building:AddAbility(newAbilityName)
+		end
 	end
 end
 
@@ -65,7 +91,7 @@ function _UpgradeBuildingInfo(building, unitInfo)
 	local lvlStr = tostring(building.upgradeLevel)
 	
 	-- Model
-	local newModel = unitInfo:GetMultiValue("Model" .. lvlStr, "string")
+	local newModel = unitInfo:GetValue("Model" .. lvlStr, "string")
 	BB:Print("Model: " .. tostring(newModel), 2)
 	if newModel ~= nil then
 		building:SetModel(newModel)
@@ -90,7 +116,51 @@ function _UpgradeBuildingInfo(building, unitInfo)
 	-- Health
 	local newHealth = unitInfo:GetValue("StatusHealth" .. lvlStr, "number", nil)
 	BB:Print("Health: " .. tostring(newHealth), 2)
-	if value ~= nil then
+	if newHealth ~= nil then
 		building:SetHealth(newHealth)
 	end
+	
+	-- Attack damage
+	local damageMin = unitInfo:GetValue("AttackDamageMin" .. lvlStr, "number", nil)
+	BB:Print("AttackDamageMin: " .. tostring(damageMin), 2)
+	if damageMin ~= nil then
+		building:SetBaseDamageMin(damageMin)
+	end
+	
+	local damageMax = unitInfo:GetValue("AttackDamageMax" .. lvlStr, "number", nil)
+	BB:Print("AttackDamageMax: " .. tostring(damageMax), 2)
+	if damageMax ~= nil then
+		building:SetBaseDamageMax(damageMax)
+	end
+	
+	-- Attack rate
+	local attackRate = unitInfo:GetValue("AttackRate" .. lvlStr, "float", nil)
+	BB:Print("AttackRate: " .. tostring(attackRate), 2)
+	if attackRate ~= nil then
+		building:SetBaseAttackTime(attackRate)
+	end
+end
+
+function _ReplaceUnit(unit, newUnitName)
+	local owner = unit:GetOwner()
+	local location = unit:GetOrigin()
+	local playerId = owner:GetPlayerID()
+	local playerTeam = PlayerResource:GetTeam(playerId)
+	
+	local upgradeLevel = unit.upgradeLevel
+	
+	-- Remove old unit
+	unit:Destroy()
+	
+	-- Create new unit
+	unit = CreateUnitByName(newUnitName, location, false, owner, nil, playerTeam)
+	if unit == nil then
+		return
+	end
+	--unit:SetInvulnCount(0)
+	unit:SetControllableByPlayer(playerId, true)
+	unit:SetOwner(owner)
+	LevelUpAllAbilities(unit)
+	
+	unit.upgradeLevel = upgradeLevel
 end

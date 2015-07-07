@@ -89,21 +89,20 @@ function GameMode:_InitGameMode()
 	ListenToGameEvent("dota_player_selected_custom_team", Dynamic_Wrap(GameMode, 'OnPlayerSelectedCustomTeam'), self)
 	ListenToGameEvent("dota_npc_goal_reached", Dynamic_Wrap(GameMode, 'OnNPCGoalReached'), self)
 	
+	ListenToGameEvent("dota_player_deny", Dynamic_Wrap(GameMode, "OnPlayerDeny"), self)
+	ListenToGameEvent("dota_money_changed", Dynamic_Wrap(GameMode, "OnMoneyChanged"), self)
+	ListenToGameEvent("player_shoot", Dynamic_Wrap(GameMode, "OnPlayerShoot"), self)
+	
 	--ListenToGameEvent("dota_tutorial_shop_toggled", Dynamic_Wrap(GameMode, 'OnShopToggled'), self)
 
 	--ListenToGameEvent('player_spawn', Dynamic_Wrap(GameMode, 'OnPlayerSpawn'), self)
-	--ListenToGameEvent('dota_unit_event', Dynamic_Wrap(GameMode, 'OnDotaUnitEvent'), self)
+	--ListenToGameEvent('dota_unit_event', Dynamic_Wrap(GameMode, 'OnUnitEvent'), self)
 	--ListenToGameEvent('nommed_tree', Dynamic_Wrap(GameMode, 'OnPlayerAteTree'), self)
 	--ListenToGameEvent('player_completed_game', Dynamic_Wrap(GameMode, 'OnPlayerCompletedGame'), self)
 	--ListenToGameEvent('dota_match_done', Dynamic_Wrap(GameMode, 'OnDotaMatchDone'), self)
 	--ListenToGameEvent('dota_combatlog', Dynamic_Wrap(GameMode, 'OnCombatLogEvent'), self)
 	--ListenToGameEvent('dota_player_killed', Dynamic_Wrap(GameMode, 'OnPlayerKilled'), self)
 	--ListenToGameEvent('player_team', Dynamic_Wrap(GameMode, 'OnPlayerTeam'), self)
-
-	--[[This block is only used for testing events handling in the event that Valve adds more in the future
-	Convars:RegisterCommand('events_test', function()
-			GameMode:StartEventTest()
-		end, "events test", 0)]]
 
 	local spew = 0
 	if BAREBONES_DEBUG_SPEW then

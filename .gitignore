@@ -7,3 +7,5 @@
 *.bin
 /game/panorama_debugger.cfg
 /game/maps
+/assets
+/todo.txt

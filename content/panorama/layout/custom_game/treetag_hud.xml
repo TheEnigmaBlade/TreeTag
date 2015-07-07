@@ -1,0 +1,15 @@
+<root>
+	<styles>
+		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
+		<include src="file://{resources}/styles/custom_game/treetag_hud.css" />
+	</styles>
+	<scripts>
+		<include src="file://{resources}/scripts/custom_game/treetag_hud.js" />
+	</scripts>
+	<Panel class="TreetagResources">
+		<Panel id="Wood" class="Resource">
+			<Image class="Icon" src="file://{images}/custom_game/resource_wood.png" />
+			<Label class="Value" text="0" />
+		</Panel>
+	</Panel>
+</root>

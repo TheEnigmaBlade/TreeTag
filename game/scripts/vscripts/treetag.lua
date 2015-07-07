@@ -1,8 +1,4 @@
--- This is the primary barebones gamemode script and should be used to assist in initializing your game mode
-
-
--- Set this to true if you want to see a complete debug output of all events/processes done by barebones
--- You can also change the cvar 'barebones_spew' at any time to 1 or 0 for output/no output
+DEBUG_MODE = false				-- Note to self: disable before release
 BAREBONES_DEBUG_SPEW = false
 
 if GameMode == nil then
@@ -13,6 +9,8 @@ require("libraries.logger")
 require("libraries.timers")
 require("libraries.notifications")
 require("libraries.building_buddy")
+require("libraries.unit_buddy")
+require("libraries.unit_util")
 
 require("internal.gamemode")
 require("internal.events")
@@ -40,11 +38,22 @@ function GameMode:InitGameMode()
 	Convars:RegisterCommand("explore", Dynamic_Wrap(GameMode, "ExplorationCommand"), "Give current hero exploration mode", FCVAR_CHEAT)
 	Convars:RegisterCommand("reset_cooldowns", Dynamic_Wrap(GameMode, "ResetCooldownsCommand"), "Reset current hero cooldowns", FCVAR_CHEAT)
 	Convars:RegisterCommand("levelup", Dynamic_Wrap(GameMode, "LevelUpCommand"), "Level-up current hero", FCVAR_CHEAT)
-	Convars:RegisterCommand("message_good_guys", Dynamic_Wrap(GameMode, "GoodGuyMessageCommand"), "Send a message to the good guys", FCVAR_CHEAT)
-	Convars:RegisterCommand("message_bad_guys", Dynamic_Wrap(GameMode, "BadGuyMessageCommand"), "Send a message to the bad guys", FCVAR_CHEAT)
+	Convars:RegisterCommand("message_good_guys", Dynamic_Wrap(GameMode, "GameMode:GoodGuyMessageCommand"), "Send a message to the good guys", FCVAR_CHEAT)
+	Convars:RegisterCommand("message_bad_guys", Dynamic_Wrap(GameMode, "GameMode:BadGuyMessageCommand"), "Send a message to the bad guys", FCVAR_CHEAT)
+	Convars:RegisterCommand("spawn_badguy", Dynamic_Wrap(GameMode, "SpawnBadGuy"), "Spawn a bad guy", FCVAR_CHEAT)
 	
-	-- Initialize BuildingHelper
+	-- Initialize libraries
 	BuildingBuddy:Init()
+	UnitBuddy:Init()
+	
+	-- Game variables
+	GameMode.deadGoodGuys = 0
+	GameMode.deadBadGuys = 0
+	
+	GameMode.playerWood = {}
+	for i = 0, 10 do
+		GameMode.playerWood[i] = 0
+	end
 	
 	GameMode:PrintH("Done loading gamemode!\n")
 end
@@ -62,7 +71,7 @@ end
 	This function should generally only be used if the Precache() function in addon_game_mode.lua is not working.
 ]]
 function GameMode:PostLoadPrecache()
-	DebugPrint("[TREETAG] Performing Post-Load precache")
+	--GameMode:PrintH("Performing Post-Load precache")
 	--PrecacheItemByNameAsync("item_example_item", function(...) end)
 	--PrecacheItemByNameAsync("example_ability", function(...) end)
 
@@ -85,25 +94,28 @@ end
 function GameMode:OnAllPlayersLoaded()
 	GameMode:PrintH("All Players have loaded into the game")
 	
-	Timers:CreateTimer(10, function()
-		Notifications:TopToTeam(DOTA_TEAM_GOODGUYS, MESSAGE_HEADSTART_GOOD, 5, "GoodGuyMessage")
-		Notifications:TopToTeam(DOTA_TEAM_BADGUYS, MESSAGE_HEADSTART_BAD, 5, "BadGuyMessage")
+	local waitTime
+	if DEBUG_MODE then
+		waitTime = 0
+	else
+		waitTime = 5
+	end
+	
+	Timers:CreateTimer(waitTime, function()
+		GoodGuyMessage(MESSAGE_HEADSTART_GOOD, 5)
+		BadGuyMessage(MESSAGE_HEADSTART_BAD, 5)
 		
-		for _, hero in pairs(Entities:FindAllByClassname("npc_dota_hero_wisp")) do
+		for _, hero in pairs(Entities:FindAllByClassname(HERO_DUMMY)) do
 			local playerId = hero:GetPlayerOwnerID()
 			local team = hero:GetTeam()
 			
-			local newHeroName, startGold
 			if team == DOTA_TEAM_GOODGUYS then
-				newHeroName = "npc_dota_hero_treant"
-				startGold = START_GOLD_GOOD
-			else
-				newHeroName = "npc_dota_hero_shredder"
-				startGold = START_GOLD_BAD
+				GameMode:Print("Player " .. tostring(playerId) .. " is a good guy and has their hero", 1)
+				PlayerResource:ReplaceHeroWith(playerId, HERO_GOOD, START_GOLD_GOOD, 0)
+			elseif DEBUG_MODE then
+				GameMode:Print("Player " .. tostring(playerId) .. " is a bad guy and has their hero", 1)
+				PlayerResource:ReplaceHeroWith(playerId, HERO_BAD, START_GOLD_BAD, 0)
 			end
-			
-			GameMode:Print("Player " .. tostring(playerId) .. " is on team " .. tostring(team) .. " and gets " .. newHeroName, 1)
-			PlayerResource:ReplaceHeroWith(playerId, newHeroName, startGold, 0)
 		end
 	end)
 end
@@ -114,14 +126,16 @@ function GameMode:OnHeroInGame(hero)
 	local playerId = hero:GetPlayerOwnerID()
 	
 	-- Initialize dummy state
-	if heroName == "npc_dota_hero_wisp" then
+	if heroName == HERO_DUMMY then
 		GameMode:PrintH("Initializing player " .. tostring(playerId) .. " dummy")
-		InitDummyHero(hero, playerId)
+		PlayerResource:SetGold(playerId, 0, false)
+		InitDummyHero(hero)
 		return
 	end
 	
 	-- Initialize actual hero
 	GameMode:PrintH("Initializing player hero")
+	UnitBuddy:InitUnit(hero)
 	
 	local team = hero:GetTeam()
 	GameMode:Print("Hero: " .. hero:GetUnitName(), 1)
@@ -137,25 +151,211 @@ function GameMode:OnHeroInGame(hero)
 	end
 end
 
+function GameMode:OnHeroDeath(victim, killer)
+	local victimTeam = victim:GetTeam()
+	if victimTeam == DOTA_TEAM_GOODGUYS then
+		GameMode.deadGoodGuys = GameMode.deadGoodGuys + 1
+		if GameMode.deadGoodGuys == PlayerResource:GetPlayerCountForTeam(DOTA_TEAM_GOODGUYS) then
+			EndGame(DOTA_TEAM_BADGUYS)
+		end
+		
+		GoodGuyMessage(MESSAGE_GOOD_DEATH_GOOD, 5)
+		BadGuyMessage(MESSAGE_GOOD_DEATH_BAD, 5)
+	else
+		GameMode.deadBadGuys = GameMode.deadBadGuys + 1
+		
+		GoodGuyMessage(MESSAGE_BAD_DEATH_GOOD, 5)
+		BadGuyMessage(MESSAGE_BAD_DEATH_BAD, 5)
+	end
+end
+
+function GameMode:OnHeroRespawn(hero)
+	local heroName = hero:GetUnitName()
+	local playerId = hero:GetPlayerOwnerID()
+	local team = hero:GetTeam()
+	GameMode:PrintH("Hero respawned: " .. heroName .. " on team " .. tostring(team))
+	GameMode:Print("Model scale = " .. tostring(hero:GetModelScale()), 1)
+	
+	if team == DOTA_TEAM_GOODGUYS then
+		GameMode.deadGoodGuys = GameMode.deadGoodGuys - 1
+		local playerGold = PlayerResource:GetGold(playerId)
+		local hero = PlayerResource:ReplaceHeroWith(playerId, HERO_DUMMY, playerGold, 0)
+		InitDummyHero(hero)
+	else
+		GameMode.deadBadGuys = GameMode.deadBadGuys - 1
+	end
+	
+	UnitBuddy:InitUnit(hero)
+end
+
 -- Start the game
 function GameMode:OnGameInProgress()
 	GameMode:Print("The game has begun")
 	
-	Notifications:TopToTeam(DOTA_TEAM_GOODGUYS, MESSAGE_START_GOOD, 5, "GoodGuyMessage")
-	Notifications:TopToTeam(DOTA_TEAM_BADGUYS, MESSAGE_START_BAD, 5, "BadGuyMessage")
+	GoodGuyMessage(MESSAGE_START_GOOD, 5)
+	BadGuyMessage(MESSAGE_START_BAD, 5)
 	
-	--[[for _, hero in pairs(Entities:FindAllByClassname("npc_dota_hero_wisp")) do
+	-- Finish granting actual heroes
+	for _, hero in pairs(Entities:FindAllByClassname(HERO_DUMMY)) do
 		local playerId = hero:GetPlayerOwnerID()
-		local team = hero:GetTeam()
+		if playerId >= 0 then
+			local team = hero:GetTeam()
+			
+			if team == DOTA_TEAM_BADGUYS then
+				GameMode:Print("Player " .. tostring(playerId) .. " is a bad guy and has their hero", 1)
+				PlayerResource:ReplaceHeroWith(playerId, HERO_BAD, START_GOLD_BAD, 0)
+			end
+		end
+	end
+	
+	-- Start regular updates to bad guys
+	local updateIndex = 1
+	Timers:CreateTimer(UPDATE_PERIOD, function()
+		GameMode:PrintH("Regular update #" .. tostring(updateIndex) .. " triggered (period=" .. tostring(UPDATE_PERIOD) .. ")")
 		
-		local newHeroName = "npc_dota_hero_shredder"
-		local startGold = START_GOLD_BAD
+		-- Give experience to bad guys (because they're probaby sucking)
+		local addExp = UPDATE_EXP_BASE * updateIndex
+		for playerId = 0, 9 do
+			local player = PlayerResource:GetPlayer(playerId)
+			if player ~= nil and player:GetTeam() == DOTA_TEAM_BADGUYS then
+				GameMode:Print("Updating hero owned by player " .. tostring(playerId), 1)
+				
+				local hero = player:GetAssignedHero()
+				GameMode:Print("Hero: " .. hero:GetUnitName(), 2)
+				hero:AddExperience(addExp, DOTA_ModifyXP_Unspecified, false, false)
+				
+				-- While we're at it, give them some bonus movement speed
+				--hero:SetBaseMoveSpeed(hero:GetBaseMoveSpeed() + UPDATE_MOVESPEED)
+			end
+		end
 		
-		GameMode:Print("Player " .. tostring(playerId) .. " is on team " .. tostring(team) .. " and gets " .. newHeroName, 1)
-		PlayerResource:ReplaceHeroWith(playerId, newHeroName, startGold, 0)
-	end]]
+		-- Pick some messages and send them to the players
+		local msgsBad = UPDATE_MESSAGES_BAD[updateIndex]
+		local msgBad = msgsBad[math.random(#msgsBad)]
+		BadGuyMessage(msgBad, 5)
+		
+		local msgsGood = UPDATE_MESSAGES_GOOD[updateIndex]
+		local msgGood = msgsGood[math.random(#msgsGood)]
+		GoodGuyMessage(msgGood, 5)
+		
+		-- End of updates
+		updateIndex = updateIndex + 1
+		if updateIndex <= NUM_UPDATES then
+			return UPDATE_PERIOD
+		end
+		return nil
+	end)
+	
+	-- Start time-based win condition
+	Timers:CreateTimer(GAME_LENGTH, function()
+		GameMode:PrintH("Game win condition met: time (trees win!)")
+		GameMode:EndGame(DOTA_TEAM_GOODGUYS)
+		return nil
+	end)
 end
 
+function GameMode:EndGame(winningTeam)
+	GameRules:SetSafeToLeave(true)
+	GameRules:SetGameWinner(winningTeam)
+	local loser
+	if winningTeam == DOTA_TEAM_GOODGUYS then
+		loser = DOTA_TEAM_BADGUYS
+	else
+		loser = DOTA_TEAM_GOODGUYS
+	end
+	GameRules:MakeTeamLose(loser)
+end
+
+-- Initialize special units
+function GameMode:OnUnitInGame(unit)
+	UnitBuddy:InitUnit(unit)
+	local isBuilding = UnitBuddy:IsBuilding(unit)
+	
+	-- Level up all abilities of buildings and others
+	local unitName = unit:GetUnitName()
+	if isBuilding or InArray(AUTO_LEVEL_UNITS, unitName) then
+		LevelUpAllAbilities(unit)
+	end
+	
+	-- Apply the building modifier
+	if isBuilding then
+		local modifiers = CreateItem("item_modifier_master", nil, nil)
+		modifiers:ApplyDataDrivenModifier(unit, unit, "is_building", {})
+	else
+		CreateLifeParticles(unit)
+	end
+end
+
+-- An entity somewhere has been hurt.
+function GameMode:OnEntityHurt(keys)
+	--GameMode:PrintH("Entity Hurt")
+
+	local damagebits = keys.damagebits -- This might always be 0 and therefore useless
+	local entCause = nil
+	if keys.entindex_attacker ~= nil then
+		entCause = EntIndexToHScript(keys.entindex_attacker)
+	end
+	local entVictim = EntIndexToHScript(keys.entindex_killed)
+	
+	if entCause ~= nil and entVictim:IsAlive() then
+		if entVictim:IsRealHero() then
+			-- Check if victim is a dummy and should be revived
+			local victimName = entVictim:GetUnitName()
+			local causeTeam = entCause:GetTeamNumber()
+			if victimName == HERO_DUMMY then
+				if causeTeam == DOTA_TEAM_GOODGUYS then
+					local playerGold = PlayerResource:GetGold(playerId)
+					PlayerResource:ReplaceHeroWith(playerId, HERO_DUMMY, playerGold, 0)
+				else
+					entCause:Kill()
+				end
+			end
+		else
+			-- Check if victim is a building and attacker is its owner
+			local causePlayerId = entCause:GetPlayerOwnerID()
+			local victimPlayerId = entVictim:GetPlayerOwnerID()
+			--local causePlayerId
+			--if entCause[GetPlayerID] ~= nil then
+				-- Attacked by hero
+			--	causePlayerId = entCause:GetPlayerID()
+			--else
+				-- Attacked by non-hero unit (like a tower)
+			--	causePlayerId = entCause:GetOwner():GetPlayerID()
+			--end
+			--local victimPlayerId = entVictim:GetOwner():GetPlayerID()
+			GameMode:Print("Cause player ID: " .. tostring(causePlayerId), 1)
+			GameMode:Print("Victim player ID: " .. tostring(victimPlayerId), 1)
+			
+			if causePlayerId == victimPlayerId then
+				entVictim:Kill(nil, entCause)
+			end
+		end
+	end
+end
+
+function GameMode:OnPlayerDeny(keys)
+	GameMode:PrintH("Player deny event")
+	GameMode:PrintTable(keys)
+end
+
+function GameMode:OnMoneyChanged(keys)
+	--GameMode:PrintH("Money changed")
+	--GameMode:PrintTable(keys)
+	--TODO: maybe add gold next to wood in HUD
+end
+
+-- Message utils
+function GoodGuyMessage(msg, length)
+	Notifications:TopToTeam(DOTA_TEAM_GOODGUYS, {text=msg, duration=length, class="GoodGuyMessage"})
+end
+
+function BadGuyMessage(msg, length)
+	Notifications:TopToTeam(DOTA_TEAM_BADGUYS, {text=msg, duration=length, class="BadGuyMessage"})
+end
+
+function ErrorMessage(msg, player)
+	Notifications:Bottom(player, {text=msg, duration=1, class="AbilityError"})
+end
 
 --[[ DEBUG/CHEAT COMMANDS ]]
 
@@ -165,7 +365,7 @@ function GameMode:CheatGoldCommand()
 	if cmdPlayer then
 		local playerId = cmdPlayer:GetPlayerID()
 		if playerId ~= nil and playerId ~= -1 then
-			PlayerResource:ModifyGold(playerId, 100, false, DOTA_ModifyGold_CheatCommand)
+			PlayerResource:ModifyGold(playerId, 1000, false, DOTA_ModifyGold_CheatCommand)
 		end
 	end
 end
@@ -176,7 +376,7 @@ function GameMode:ExplorationCommand()
 		local playerId = cmdPlayer:GetPlayerID()
 		if playerId ~= nil and playerId ~= -1 then
 			local hero = cmdPlayer:GetAssignedHero()
-			hero:SetBaseMoveSpeed(600)
+			hero:SetBaseMoveSpeed(800)
 		end
 	end
 end
@@ -207,9 +407,13 @@ function GameMode:LevelUpCommand()
 end
 
 function GameMode:GoodGuyMessageCommand()
-	Notifications:TopToTeam(DOTA_TEAM_GOODGUYS, "Test is a test message for good guys!", 10, "GoodGuyMessage")
+	GoodGuyMessage("Test is a test message for good guys!", 10)
 end
 
 function GameMode:BadGuyMessageCommand()
-	Notifications:TopToTeam(DOTA_TEAM_BADGUYS, "Test is a test message for bad guys!", 10, "BadGuyMessage")
+	BadGuyMessage("Test is a test message for bad guys!", 10)
+end
+
+function GameMode:SpawnBadGuy()
+	CreateUnitByName("npc_badguy_dummy", Vector(0, 0, 0), false, nil, nil, DOTA_TEAM_BADGUYS)
 end

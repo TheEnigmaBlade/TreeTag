@@ -13,3 +13,29 @@ function Blink(keys)
 	
 	FindClearSpaceForUnit(hero, targetPoint, false)
 end
+
+function StartWoodGather(keys)
+	GameMode:PrintH("Starting wood gathering")
+	GameMode:PrintTable(keys)
+	local caster = keys.caster
+	local tree = keys.target
+	
+	--TODO: check if tree already has a wisp
+	local treeOrigin = tree:GetOrigin()
+	caster:SetOrigin(treeOrigin)
+end
+
+function StopWoodGather(keys)
+	GameMode:PrintH("Stopping wood gathering")
+	GameMode:PrintTable(keys)
+	local caster = keys.caster
+	FindClearSpaceForUnit(caster, caster:GetOrigin(), true)
+end
+
+function GatherWood(keys)
+	--TODO: check if the tree exists, stop if it doesn't
+	local caster = keys.caster
+	local player = caster:GetPlayerOwner()
+	local playerId = caster:GetPlayerOwnerID()
+	ChangePlayerWood(player, 1)
+end
