@@ -588,10 +588,10 @@
 		"AbilityTextureName"		"lina_light_strike_array"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
 
-		"MaxLevel"					"5"
-		"AbilityCastRange"			"360 460 560 760 860"
-		"AbilityCooldown"			"30 30 25 25 20"
-		"AbilityManaCost"			"40 45 50 55 60"
+		"MaxLevel"					"4"
+		"AbilityCastRange"			"460 560 760 860"
+		"AbilityCooldown"			"30 30 25 20"
+		"AbilityManaCost"			"45 50 55 60"
 
 		"AoERadius"					"%affect_aoe"
 
@@ -600,7 +600,7 @@
 			"01"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"affect_aoe"		"300 400 500 700 800"
+				"affect_aoe"		"400 500 700 800"
 			}
 
 			"02"

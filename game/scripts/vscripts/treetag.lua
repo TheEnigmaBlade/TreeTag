@@ -1,4 +1,4 @@
-DEBUG_MODE = false				-- Note to self: disable before release
+DEBUG_MODE = true				-- Note to self: disable before release
 BAREBONES_DEBUG_SPEW = false
 
 if GameMode == nil then

@@ -42,7 +42,7 @@
 	
 	"item_build_gold_gen"
 	{
-		"ID"						"1100"
+		"ID"						"1110"
 		"BaseClass"					"item_datadriven"
 		"AbilityTextureName"		"item_hand_of_midas"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT"
@@ -90,7 +90,7 @@
 	
 	"item_build_scout_tower"
 	{
-		"ID"						"1200"
+		"ID"						"1120"
 		"BaseClass"					"item_datadriven"
 		"AbilityTextureName"		"item_ward_observer"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT"
@@ -138,7 +138,7 @@
 	
 	"item_build_wall"
 	{
-		"ID"						"1300"
+		"ID"						"1130"
 		"BaseClass"					"item_datadriven"
 		"AbilityTextureName"		"item_place_building"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT"
@@ -186,7 +186,7 @@
 	
 	"item_build_basic_tower"
 	{
-		"ID"						"1400"
+		"ID"						"1140"
 		"BaseClass"					"item_datadriven"
 		"AbilityTextureName"		"item_tombstone"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT"
@@ -240,7 +240,7 @@
 	
 	"item_build_barracks"
 	{
-		"ID"						"1500"
+		"ID"						"1150"
 		"BaseClass"					"item_datadriven"
 		"AbilityTextureName"		"item_necronomicon_3"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT"
@@ -286,133 +286,691 @@
 		}
 	}
 	
-	//Shield
-	"item_example_item"
+	///////////////////
+	// Bad guy items //
+	///////////////////
+	
+	"item_blur"
 	{
-		"ID"						"1836"
-		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_ATTACK"
-		"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
-		"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_HERO"
-		"BaseClass"					"item_datadriven"
-		"AbilityCastAnimation"		"ACT_DOTA_DISABLED"
-		"AbilityTextureName"		"item_example_item"
-
-		// Stats
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityCastRange"			"900"
-		"AbilityCastPoint"			"0.2"
-		"AbilityCooldown"			"13.0"
-
-		// Item Info
-		//-------------------------------------------------------------------------------------------------------------
-		"AbilityManaCost"			"100"
-		"ItemCost"					"750"
-		"ItemInitialCharges"		"0"
-		"ItemDroppable"				"1"
-		"ItemSellable"				"1"
-		"ItemRequiresCharges"		"0"
-		"ItemShareability"			"ITEM_NOT_SHAREABLE"
+		"ID"					"2110"
+		"BaseClass"				"item_datadriven"
+		"AbilityTextureName"	""
 		
-		"MaxUpgradeLevel"			"1"
-		"ItemBaseLevel"				"1"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"ItemShareability"		"ITEM_NOT_SHAREABLE"
+		
+		"ItemCost"			"1000"
+		"ItemPurchasable"	"1"
+		"ItemSellable"		"1"
+		"ItemDroppable"		"1"
+		
+		"SideShop"			"1"
 		
 		"precache"
 		{
-			"particle"				"particles/frostivus_herofx/queen_shadow_strike_linear_parent.vpcf"
-			"particle_folder"		"particles/test_particle"
-			"soundfile"				"soundevents/game_sounds_heroes/game_sounds_abaddon.vsndevts"
-		}
-		"OnSpellStart"
-		{
-			"LinearProjectile"
-			{
-				"EffectName"		"particles/frostivus_herofx/queen_shadow_strike_linear_parent.vpcf"
-				"MoveSpeed"			"%speed"
-				//"StartPosition"	"attach_attack1"
-				"FixedDistance"	 	"%distance"
-				"StartRadius"		"%radius"
-				"EndRadius"			"%radius"
-				"TargetTeams"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
-				"TargetTypes"		"DOTA_UNIT_TARGET_HERO"
-				"TargetFlags"		"DOTA_UNIT_TARGET_FLAG_NONE"
-				"HasFrontalCone"	"0"
-				"ProvidesVision"	"0"
-				"VisionRadius"		"0"
-			}
-			"FireSound"
-			{
-				"EffectName"		"Hero_Abaddon.AphoticShield.Cast"
-				"Target"			"CASTER"
-			}
-			"ApplyModifier"
-			{
-				"Target"			"CASTER"
-				"ModifierName"	"modifier_item_shield"
-			}
+			"particle"		"particles/units/heroes/hero_phantom_assassin/phantom_assassin_blur.vpcf"
 		}
 		
-		"OnProjectileHitUnit"
+		"AbilitySpecial"
 		{
-			"DeleteOnHit" "0"
-			"Damage"
+			"01"
 			{
-				"Target"			"TARGET"
-				"Type"		"DAMAGE_TYPE_PURE"
-				"Damage"	"%damage"
+				"var_type"				"FIELD_INTEGER"
+				"radius"				"1600"
 			}
 		}
 		
 		"Modifiers"
 		{
-			"modifier_item_shield"
+			"modifier_blur_datadriven"
 			{
-				"EffectName"		"particles/test_particle/damage_immunity.vpcf"
-				"EffectAttachType"	"follow_origin"
-				"Target"			"CASTER"
+				"Passive"	"1"
+				"IsHidden"	"1"
 				
-				"Duration" "%duration"
-				"TextureName" "abaddon_aphotic_shield"
-				"Properties"
+				"ThinkInterval"	"0.5"
+				"OnIntervalThink"
 				{
-					"MODIFIER_PROPERTY_INCOMING_DAMAGE_PERCENTAGE"		"%damage_reduction"
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/item_passives.lua"
+						"Function"		"Blur"
+						"Radius"		"%radius"
+					}
+				}
+				
+				"States"
+				{
+					"MODIFIER_STATE_NOT_ON_MINIMAP_FOR_ENEMIES"		"MODIFIER_STATE_VALUE_ENABLED"
+				}
+			}
+			
+			"modifier_blur_enemy_datadriven"
+			{
+				"EffectName"		"particles/units/heroes/hero_phantom_assassin/phantom_assassin_blur.vpcf"
+				"EffectAttachType"	"follow_origin"
+				
+				"States"
+				{
+					"MODIFIER_STATE_NOT_ON_MINIMAP_FOR_ENEMIES"		"MODIFIER_STATE_VALUE_DISABLED"
 				}
 			}
 		}
+	}
+	
+	"item_stats_health_1"
+	{
+		"ID"					"2210"
+		"BaseClass"				"item_datadriven"
+		"AbilityTextureName"	"item_vitality_booster"
+		"Model"					"models/props_gameplay/recipe.vmdl"
 		
-		// Special
-		//-------------------------------------------------------------------------------------------------------------
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"ItemShareability"		"ITEM_NOT_SHAREABLE"
+		"ItemStackable"			"0"
+    	"ItemPermanent"			"1"
+    	"ItemDisassembleRule"	"DOTA_ITEM_DISASSEMBLE_NEVER"
+		
+		"ItemCost"				"1000"
+		"ItemPurchasable"		"1"
+		"ItemSellable"			"1"
+		"ItemDroppable"			"1"
+		
+		"MaxUpgradeLevel"		"5"
+		"ItemBaseLevel"			"1"
+		
+		"SideShop"				"1"
+		
 		"AbilitySpecial"
 		{
 			"01"
 			{
-				"var_type"				"FIELD_FLOAT"
-				"duration"				"4.0"
+				"var_type"		"FIELD_INTEGER"
+				"health"		"500"
 			}
 			
 			"02"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"damage_reduction"		"-50"
+				"var_type"		"FIELD_FLOAT"
+				"health_regen"	"1.0"
 			}
-			"03"
+		}
+		
+		"Modifiers"
+		{
+			"modifier_item_stats_health_1"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"radius"					"150"
+				"Passive"		"1"
+				"IsHidden"		"1"
+				"Attributes"	"MODIFIER_ATTRIBUTE_MULTIPLE"
+				
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_HEALTH_BONUS"			"%health"
+					"MODIFIER_PROPERTY_HEALTH_REGEN_CONSTANT"	"%health_regen"
+				}
 			}
-			"04"
+		}
+	}
+	
+	"item_recipe_stats_health_2"
+	{
+		"ID"					"2221"
+		"BaseClass"				"item_datadriven"
+		"ItemRecipe"			"1"
+		"ItemResult"			"item_stats_health_2"
+		"ItemCost"				"0"
+		
+		"ItemRequirements"
+		{
+			"01"	"item_stats_health_1;item_stats_health_1"
+		}
+	}
+	
+	"item_stats_health_2"
+	{
+		"ID"					"2220"
+		"BaseClass"				"item_datadriven"
+		"AbilityTextureName"	"item_vitality_booster"
+		"Model"					"models/props_gameplay/recipe.vmdl"
+		
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"ItemShareability"		"ITEM_NOT_SHAREABLE"
+		
+		"ItemPurchasable"		"0"
+		"ItemSellable"			"1"
+		"ItemDroppable"			"1"
+		
+		"MaxUpgradeLevel"		"5"
+		"ItemBaseLevel"			"2"
+		
+		"AbilitySpecial"
+		{
+			"01"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"speed"					 "1800"
+				"var_type"		"FIELD_INTEGER"
+				"health"		"1000"
 			}
-			"05"
+			
+			"02"
 			{
-				"var_type"				"FIELD_FLOAT"
-				"distance"				"900"
+				"var_type"		"FIELD_FLOAT"
+				"health_regen"	"2.0"
 			}
-			"06"
+		}
+		
+		"Modifiers"
+		{
+			"modifier_item_stats_health_2"
 			{
-				"var_type"				"FIELD_INTEGER"
-				"damage"					"125"
+				"Passive"		"1"
+				"IsHidden"		"1"
+				"Attributes"	"MODIFIER_ATTRIBUTE_MULTIPLE"
+				
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_HEALTH_BONUS"			"%health"
+					"MODIFIER_PROPERTY_HEALTH_REGEN_CONSTANT"	"%health_regen"
+				}
+			}
+		}
+	}
+	
+	"item_recipe_stats_health_3"
+	{
+		"ID"					"2231"
+		"BaseClass"				"item_datadriven"
+		"ItemRecipe"			"1"
+		"ItemResult"			"item_stats_health_3"
+		"ItemCost"				"0"
+		
+		"ItemRequirements"
+		{
+			"01"	"item_stats_health_2;item_stats_health_1"
+		}
+	}
+	
+	"item_stats_health_3"
+	{
+		"ID"					"2230"
+		"BaseClass"				"item_datadriven"
+		"AbilityTextureName"	"item_vitality_booster"
+		"Model"					"models/props_gameplay/recipe.vmdl"
+		
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"ItemShareability"		"ITEM_NOT_SHAREABLE"
+		
+		"ItemPurchasable"		"0"
+		"ItemSellable"			"1"
+		"ItemDroppable"			"1"
+		
+		"MaxUpgradeLevel"		"5"
+		"ItemBaseLevel"			"3"
+		
+		"SideShop"				"1"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"		"FIELD_INTEGER"
+				"health"		"2000"
+			}
+			
+			"02"
+			{
+				"var_type"		"FIELD_FLOAT"
+				"health_regen"	"4.0"
+			}
+		}
+		
+		"Modifiers"
+		{
+			"modifier_item_stats_health_3"
+			{
+				"Passive"		"1"
+				"IsHidden"		"1"
+				"Attributes"	"MODIFIER_ATTRIBUTE_MULTIPLE"
+				
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_HEALTH_BONUS"			"%health"
+					"MODIFIER_PROPERTY_HEALTH_REGEN_CONSTANT"	"%health_regen"
+				}
+			}
+		}
+	}
+	
+	"item_recipe_stats_health_4"
+	{
+		"ID"					"2241"
+		"BaseClass"				"item_datadriven"
+		"ItemRecipe"			"1"
+		"ItemResult"			"item_stats_health_4"
+		"ItemCost"				"0"
+		
+		"ItemRequirements"
+		{
+			"01"	"item_stats_health_3;item_stats_health_1"
+		}
+	}
+	
+	"item_stats_health_4"
+	{
+		"ID"					"2240"
+		"BaseClass"				"item_datadriven"
+		"AbilityTextureName"	"item_vitality_booster"
+		"Model"					"models/props_gameplay/recipe.vmdl"
+		
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"ItemShareability"		"ITEM_NOT_SHAREABLE"
+		
+		"ItemPurchasable"		"0"
+		"ItemSellable"			"1"
+		"ItemDroppable"			"1"
+		
+		"MaxUpgradeLevel"		"5"
+		"ItemBaseLevel"			"4"
+		
+		"SideShop"				"1"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"		"FIELD_INTEGER"
+				"health"		"4000"
+			}
+			
+			"02"
+			{
+				"var_type"		"FIELD_FLOAT"
+				"health_regen"	"8.0"
+			}
+		}
+		
+		"Modifiers"
+		{
+			"modifier_item_stats_health_4"
+			{
+				"Passive"		"1"
+				"IsHidden"		"1"
+				"Attributes"	"MODIFIER_ATTRIBUTE_MULTIPLE"
+				
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_HEALTH_BONUS"			"%health"
+					"MODIFIER_PROPERTY_HEALTH_REGEN_CONSTANT"	"%health_regen"
+				}
+			}
+		}
+	}
+	
+	"item_recipe_stats_health_5"
+	{
+		"ID"					"2251"
+		"BaseClass"				"item_datadriven"
+		"ItemRecipe"			"1"
+		"ItemResult"			"item_stats_health_5"
+		"ItemCost"				"0"
+		
+		"ItemRequirements"
+		{
+			"01"	"item_stats_health_4;item_stats_health_1"
+		}
+	}
+	
+	"item_stats_health_5"
+	{
+		"ID"					"2250"
+		"BaseClass"				"item_datadriven"
+		"AbilityTextureName"	"item_bloodstone"
+		"Model"					"models/props_gameplay/recipe.vmdl"
+		
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"ItemShareability"		"ITEM_NOT_SHAREABLE"
+		
+		"ItemPurchasable"		"0"
+		"ItemSellable"			"1"
+		"ItemDroppable"			"1"
+		
+		"MaxUpgradeLevel"		"5"
+		"ItemBaseLevel"			"5"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"		"FIELD_INTEGER"
+				"health"		"10000"
+			}
+			
+			"02"
+			{
+				"var_type"		"FIELD_FLOAT"
+				"health_regen"	"1"
+			}
+		}
+		
+		"Modifiers"
+		{
+			"modifier_item_stats_health_5"
+			{
+				"Passive"		"1"
+				"IsHidden"		"1"
+				"Attributes"	"MODIFIER_ATTRIBUTE_MULTIPLE"
+				
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_HEALTH_BONUS"			"%health"
+					"MODIFIER_PROPERTY_HEALTH_REGEN_PERCENTAGE"	"%health_regen"
+				}
+			}
+		}
+	}
+	
+	"item_stats_mana_1"
+	{
+		"ID"					"2310"
+		"BaseClass"				"item_datadriven"
+		"AbilityTextureName"	"item_energy_booster"
+		"Model"					"models/props_gameplay/recipe.vmdl"
+		
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"ItemShareability"		"ITEM_NOT_SHAREABLE"
+		"ItemStackable"			"0"
+		"ItemPermanent"			"1"
+		"ItemDisassembleRule"	"DOTA_ITEM_DISASSEMBLE_NEVER"
+		
+		"ItemCost"				"900"
+		"ItemPurchasable"		"1"
+		"ItemSellable"			"1"
+		"ItemDroppable"			"1"
+		
+		"MaxUpgradeLevel"		"5"
+		"ItemBaseLevel"			"1"
+		
+		"SideShop"				"1"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"		"FIELD_INTEGER"
+				"mana"			"200"
+			}
+			
+			"02"
+			{
+				"var_type"		"FIELD_FLOAT"
+				"mana_regen"	"0.5"
+			}
+		}
+		
+		"Modifiers"
+		{
+			"modifier_item_stats_mana_1"
+			{
+				"Passive"		"1"
+				"IsHidden"		"1"
+				"Attributes"	"MODIFIER_ATTRIBUTE_MULTIPLE"
+				
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MANA_BONUS"			"%mana"
+					"MODIFIER_PROPERTY_MANA_REGEN_CONSTANT"	"%mana_regen"
+				}
+			}
+		}
+	}
+
+	"item_recipe_stats_mana_2"
+	{
+		"ID"					"2321"
+		"BaseClass"				"item_datadriven"
+		"ItemRecipe"			"1"
+		"ItemResult"			"item_stats_mana_2"
+		"ItemCost"				"0"
+		
+		"ItemRequirements"
+		{
+			"01"	"item_stats_mana_1;item_stats_mana_1"
+		}
+	}
+
+	"item_stats_mana_2"
+	{
+		"ID"					"2320"
+		"BaseClass"				"item_datadriven"
+		"AbilityTextureName"	"item_energy_booster"
+		"Model"					"models/props_gameplay/recipe.vmdl"
+		
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"ItemShareability"		"ITEM_NOT_SHAREABLE"
+		
+		"ItemPurchasable"		"0"
+		"ItemSellable"			"1"
+		"ItemDroppable"			"1"
+		
+		"MaxUpgradeLevel"		"5"
+		"ItemBaseLevel"			"2"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"		"FIELD_INTEGER"
+				"mana"			"400"
+			}
+			
+			"02"
+			{
+				"var_type"		"FIELD_FLOAT"
+				"mana_regen"	"1.0"
+			}
+		}
+		
+		"Modifiers"
+		{
+			"modifier_item_stats_mana_2"
+			{
+				"Passive"		"1"
+				"IsHidden"		"1"
+				"Attributes"	"MODIFIER_ATTRIBUTE_MULTIPLE"
+				
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MANA_BONUS"			"%mana"
+					"MODIFIER_PROPERTY_MANA_REGEN_CONSTANT"	"%mana_regen"
+				}
+			}
+		}
+	}
+
+	"item_recipe_stats_mana_3"
+	{
+		"ID"					"2331"
+		"BaseClass"				"item_datadriven"
+		"ItemRecipe"			"1"
+		"ItemResult"			"item_stats_mana_3"
+		"ItemCost"				"0"
+		
+		"ItemRequirements"
+		{
+			"01"	"item_stats_mana_2;item_stats_mana_1"
+		}
+	}
+
+	"item_stats_mana_3"
+	{
+		"ID"					"2330"
+		"BaseClass"				"item_datadriven"
+		"AbilityTextureName"	"item_energy_booster"
+		"Model"					"models/props_gameplay/recipe.vmdl"
+		
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"ItemShareability"		"ITEM_NOT_SHAREABLE"
+		
+		"ItemPurchasable"		"0"
+		"ItemSellable"			"1"
+		"ItemDroppable"			"1"
+		
+		"MaxUpgradeLevel"		"5"
+		"ItemBaseLevel"			"3"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"		"FIELD_INTEGER"
+				"mana"			"800"
+			}
+			
+			"02"
+			{
+				"var_type"		"FIELD_FLOAT"
+				"mana_regen"	"2.0"
+			}
+		}
+		
+		"Modifiers"
+		{
+			"modifier_item_stats_mana_3"
+			{
+				"Passive"		"1"
+				"IsHidden"		"1"
+				"Attributes"	"MODIFIER_ATTRIBUTE_MULTIPLE"
+				
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MANA_BONUS"			"%mana"
+					"MODIFIER_PROPERTY_MANA_REGEN_CONSTANT"	"%mana_regen"
+				}
+			}
+		}
+	}
+
+	"item_recipe_stats_mana_4"
+	{
+		"ID"					"2341"
+		"BaseClass"				"item_datadriven"
+		"ItemRecipe"			"1"
+		"ItemResult"			"item_stats_mana_4"
+		"ItemCost"				"0"
+		
+		"ItemRequirements"
+		{
+			"01"	"item_stats_mana_3;item_stats_mana_1"
+		}
+	}
+
+	"item_stats_mana_4"
+	{
+		"ID"					"2340"
+		"BaseClass"				"item_datadriven"
+		"AbilityTextureName"	"item_energy_booster"
+		"Model"					"models/props_gameplay/recipe.vmdl"
+		
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"ItemShareability"		"ITEM_NOT_SHAREABLE"
+		
+		"ItemPurchasable"		"0"
+		"ItemSellable"			"1"
+		"ItemDroppable"			"1"
+		
+		"MaxUpgradeLevel"		"5"
+		"ItemBaseLevel"			"4"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"		"FIELD_INTEGER"
+				"mana"			"1600"
+			}
+			
+			"02"
+			{
+				"var_type"		"FIELD_FLOAT"
+				"mana_regen"	"4.0"
+			}
+		}
+		
+		"Modifiers"
+		{
+			"modifier_item_stats_mana_4"
+			{
+				"Passive"		"1"
+				"IsHidden"		"1"
+				"Attributes"	"MODIFIER_ATTRIBUTE_MULTIPLE"
+				
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MANA_BONUS"			"%mana"
+					"MODIFIER_PROPERTY_MANA_REGEN_CONSTANT"	"%mana_regen"
+				}
+			}
+		}
+	}
+
+	"item_recipe_stats_mana_5"
+	{
+		"ID"					"2351"
+		"BaseClass"				"item_datadriven"
+		"ItemRecipe"			"1"
+		"ItemResult"			"item_stats_mana_5"
+		"ItemCost"				"0"
+		
+		"ItemRequirements"
+		{
+			"01"	"item_stats_mana_4;item_stats_mana_1"
+		}
+	}
+
+	"item_stats_mana_5"
+	{
+		"ID"					"2350"
+		"BaseClass"				"item_datadriven"
+		"AbilityTextureName"	"item_sphere"
+		"Model"					"models/props_gameplay/recipe.vmdl"
+		
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"ItemShareability"		"ITEM_NOT_SHAREABLE"
+		
+		"ItemPurchasable"		"0"
+		"ItemSellable"			"1"
+		"ItemDroppable"			"1"
+		
+		"MaxUpgradeLevel"		"5"
+		"ItemBaseLevel"			"5"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"		"FIELD_INTEGER"
+				"mana"			"3500"
+			}
+			
+			"02"
+			{
+				"var_type"		"FIELD_FLOAT"
+				"mana_regen"	"1"
+			}
+		}
+		
+		"Modifiers"
+		{
+			"modifier_item_stats_mana_5"
+			{
+				"Passive"		"1"
+				"IsHidden"		"1"
+				"Attributes"	"MODIFIER_ATTRIBUTE_MULTIPLE"
+				
+				"Properties"
+				{
+					"MODIFIER_PROPERTY_MANA_BONUS"				"%mana"
+					"MODIFIER_PROPERTY_MANA_REGEN_PERCENTAGE"	"%mana_regen"
+				}
 			}
 		}
 	}
