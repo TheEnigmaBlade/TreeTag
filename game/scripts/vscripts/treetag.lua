@@ -144,7 +144,7 @@ function GameMode:OnHeroInGame(hero)
 	
 	if team == DOTA_TEAM_GOODGUYS then
 		GameMode:Print("They're a good guy!", 1)
-		InitGoodHero(hero, playerId)
+		InitGoodHero(hero)
 	else
 		GameMode:Print("They're a BAAAAD guy!", 1)
 		InitBadHero(hero)
@@ -156,7 +156,7 @@ function GameMode:OnHeroDeath(victim, killer)
 	if victimTeam == DOTA_TEAM_GOODGUYS then
 		GameMode.deadGoodGuys = GameMode.deadGoodGuys + 1
 		if GameMode.deadGoodGuys == PlayerResource:GetPlayerCountForTeam(DOTA_TEAM_GOODGUYS) then
-			EndGame(DOTA_TEAM_BADGUYS)
+			GameMode:EndGame(DOTA_TEAM_BADGUYS)
 		end
 		
 		GoodGuyMessage(MESSAGE_GOOD_DEATH_GOOD, 5)
@@ -307,7 +307,7 @@ function GameMode:OnEntityHurt(keys)
 					local playerGold = PlayerResource:GetGold(playerId)
 					PlayerResource:ReplaceHeroWith(playerId, HERO_DUMMY, playerGold, 0)
 				else
-					entCause:Kill()
+					entCause:Kill(nil, entCause)
 				end
 			end
 		else

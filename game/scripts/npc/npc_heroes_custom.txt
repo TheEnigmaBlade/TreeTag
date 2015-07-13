@@ -5,6 +5,7 @@
 		"override_hero"			"npc_dota_hero_wisp"
 		"ModelScale"			"0.5"
 		"SoundSet"				"0"
+		"HasInventory"			"0"
 		
 		"AbilityLayout"			"4"
 		"Ability1"				"barebones_empty1"
@@ -120,8 +121,8 @@
 		//"AttackRange"			"20"
 		
 		"AttributePrimary"				"DOTA_ATTRIBUTE_STRENGTH"
-		"AttributeBaseStrength"			"10"						// Base strength
-		"AttributeStrengthGain"			"5"							// Strength bonus per level.
+		"AttributeBaseStrength"			"0"						// Base strength
+		"AttributeStrengthGain"			"10"						// Strength bonus per level.
 		"AttributeBaseIntelligence" 	"0"							// Base intelligence
 		"AttributeIntelligenceGain" 	"0"							// Intelligence bonus per level.
 		"AttributeBaseAgility"			"0"							// Base agility
@@ -132,8 +133,8 @@
 		"BountyGoldMax"				"200"
 		
 		"BoundsHullName"			"DOTA_HULL_SIZE_HERO"
-		"HullRadius"				"60"
-		"RingRadius"				"80"
+		"HullRadius"				"55"
+		"RingRadius"				"75"
 		
 		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
 		"MovementSpeed"				"425"							// Speed.
@@ -142,7 +143,7 @@
 		"StatusHealth"				"1000"						// Base health.
 		"StatusHealthRegen"			"0.5"						// Health regeneration rate.
 		"StatusMana"				"200"						// Base mana.
-		"StatusManaRegen"			"1.0"						// Mana regeneration rate.
+		"StatusManaRegen"			"0.5"						// Mana regeneration rate.
 		
 		"VisionDaytimeRange"		"1800"						// Range of vision at night time.
 		"VisionNighttimeRange"		"1600"						// Range of vision at night time.

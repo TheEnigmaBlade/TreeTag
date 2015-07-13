@@ -5,7 +5,7 @@ function InitDummyHero(hero)
 	modifiers:ApplyDataDrivenModifier(hero, hero, "is_dummy_hero", {})
 end
 
-function InitGoodHero(hero, playerId)
+function InitGoodHero(hero)
 	hero:SetAbilityPoints(START_LVLS_GOOD)
 	
 	LevelUpAllAbilities(hero)
@@ -16,7 +16,7 @@ function InitGoodHero(hero, playerId)
 	end
 end
 
-function InitBadHero(hero, playerId)
+function InitBadHero(hero)
 	hero:SetAbilityPoints(START_LVLS_BAD)
 	
 	--local ability = hero:GetAbilityByIndex(0)

@@ -460,7 +460,7 @@
 		
 		"Modifiers"
 		{
-			"invisibleness"
+			"modifier_invisibleness"
 			{
 				"Passive"		"1"
 				"IsHidden"		"0"
@@ -469,6 +469,11 @@
 				{
 					"MODIFIER_STATE_INVISIBLE"	"MODIFIER_STATE_VALUE_ENABLED"
 				}
+				
+				//"Properties"
+				//{
+				//	"MODIFIER_PROPERTY_INVISIBILITY_LEVEL"	"0.5"
+				//}
 			}
 		}
 	}
@@ -518,7 +523,6 @@
 			{
 				"ScriptFile"		"abilities/tree_management.lua"
 				"Function"			"DestroyTree"
-				"Target"			"TARGET"
 			}
 		}
 	}
@@ -544,7 +548,6 @@
 			{
 				"ScriptFile"		"abilities/tree_management.lua"
 				"Function"			"DestroyTree"
-				"Target"			"TARGET"
 			}
 		}
 	}
@@ -591,7 +594,7 @@
 		"MaxLevel"					"4"
 		"AbilityCastRange"			"460 560 760 860"
 		"AbilityCooldown"			"30 30 25 20"
-		"AbilityManaCost"			"45 50 55 60"
+		"AbilityManaCost"			"40 60 80 100"
 
 		"AoERadius"					"%affect_aoe"
 

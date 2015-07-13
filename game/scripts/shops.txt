@@ -14,12 +14,15 @@
 	"sideshop1"
 	{
 		"item"		"item_stats_health_1"
-		"item"		"item_stats_mana_1"``
+		"item"		"item_stats_mana_1"
+		"item"		"item_stats_damage_1"
 	}
 
 	"sideshop2"
 	{
+		"item"		"item_reveal_dust"
 		"item"		"item_blur"
+		"item"		"item_speed_boost"
 	}
 	
 	"secretshop" {}
