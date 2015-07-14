@@ -75,8 +75,8 @@
 
 		// Bounty
 		"BountyXP"					"10"
-		"BountyGoldMin"				"15.0"
-		"BountyGoldMax"				"15.0"
+		"BountyGoldMin"				"50.0"
+		"BountyGoldMax"				"50.0"
 
 		// Bounds
 		"RingRadius"				"90"
@@ -145,8 +145,8 @@
 
 		// Bounty
 		"BountyXP"					"5"
-		"BountyGoldMin"				"0.0"
-		"BountyGoldMax"				"0.0"
+		"BountyGoldMin"				"10.0"
+		"BountyGoldMax"				"10.0"
 
 		// Bounds
 		"HullRadius"				"60"
@@ -210,8 +210,8 @@
 
 		// Bounty
 		"BountyXP"					"30"
-		"BountyGoldMin"				"0.0"
-		"BountyGoldMax"				"0.0"
+		"BountyGoldMin"				"30.0"
+		"BountyGoldMax"				"30.0"
 
 		// Bounds
 		"HullRadius"				"90"
@@ -273,8 +273,8 @@
 
 		// Bounty
 		"BountyXP"					"35"
-		"BountyGoldMin"				"5.0"
-		"BountyGoldMax"				"5.0"
+		"BountyGoldMin"				"60.0"
+		"BountyGoldMax"				"60.0"
 
 		// Bounds
 		"HullRadius"				"90"
@@ -368,8 +368,8 @@
 
 		// Bounty
 		"BountyXP"					"25"
-		"BountyGoldMin"				"10.0"
-		"BountyGoldMax"				"10.0"
+		"BountyGoldMin"				"75.0"
+		"BountyGoldMax"				"75.0"
 
 		// Bounds
 		"HullRadius"				"80"
@@ -431,8 +431,8 @@
 
 		// Bounty
 		"BountyXP"					"50"
-		"BountyGoldMin"				"20"
-		"BountyGoldMax"				"20"
+		"BountyGoldMin"				"100"
+		"BountyGoldMax"				"100"
 
 		// Bounds
 		"RingRadius"				"140"

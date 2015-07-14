@@ -36,6 +36,17 @@
 		}
 	}
 	
+	"item_empty"
+	{
+		"ID"							"1011"
+		"BaseClass"						"item_datadriven"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityTextureName"			"item_emptyitembg"
+		
+		"ItemDroppable"				"0"
+		"ItemSellable"				"0"
+	}
+	
 	//////////////
 	// Building //
 	//////////////
@@ -261,7 +272,7 @@
 			"01"
 			{
 				"var_type"			"FIELD_INTEGER"
-				"gold_cost"			"200"
+				"gold_cost"			"400"
 			}
 		}
 		
@@ -365,7 +376,7 @@
 		"BaseClass"				"item_dust"
 		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
 		
-		"ItemCost"				"200"
+		"ItemCost"				"100"
 		"ItemPurchasable"		"1"
 		"ItemSellable"			"1"
 		"ItemDroppable"			"1"
@@ -380,6 +391,27 @@
 		"ItemStockMax"			"3"
 		"ItemStockInitial"		"3"
 		"ItemStockTime"			"120"
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"duration"				"20"
+			}
+			
+			"02"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"radius"				"800"
+			}
+			
+			"03"
+			{
+				"var_type"				"FIELD_INTEGER"
+				"movespeed"				"0"
+			}
+		}
 		
 		"OnSpellStart"
 		{

@@ -114,9 +114,9 @@
 		{
 			"modifier_gathering_wood"
 			{
-				"IsHidden"			"4"
+				"IsHidden"			"0"
 				
-				"ThinkInterval"		"1.0"
+				"ThinkInterval"		"3.0"
 				
 				"OnIntervalThink"
 				{
@@ -154,10 +154,24 @@
 		"BaseClass"					"ability_datadriven"
 		"AbilityTextureName"		"attribute_bonus"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE"
-
+		
 		"MaxLevel"					""
-		"AbilityGoldCost"			"25"
-
+		
+		"BuildingUpgrade"
+		{
+			"GoldCost"			"25"
+			"NextUpgrade"		"upgrade_building_gold_gen_2"
+		}
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"50"
+			}
+		}
+		
 		"OnSpellStart"
 		{
 			"RunScript"
@@ -171,7 +185,6 @@
 			{
 				"ScriptFile"		"abilities/building.lua"
 				"Function"			"UpgradeBuilding"
-				"NextUpgrade"		"upgrade_building_gold_gen_2"
 			}
 		}
 	}
@@ -183,8 +196,28 @@
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE"
 
 		"MaxLevel"					""
-		"AbilityGoldCost"			"50"
-
+		
+		"BuildingUpgrade"
+		{
+			"GoldCost"			"50"
+			"WoodCost"			"25"
+		}
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"50"
+			}
+			
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"wood_cost"			"25"
+			}
+		}
+		
 		"OnSpellStart"
 		{
 			"RunScript"
@@ -207,17 +240,31 @@
 		"BaseClass"					"ability_datadriven"
 		"AbilityTextureName"		"attribute_bonus"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE"
-
+		
 		"MaxLevel"					""
-		"AbilityGoldCost"			"100"
-
+		
+		"BuildingUpgrade"
+		{
+			"GoldCost"			"100"
+			"WoodCost"			"50"
+			"NextUpgrade"		"upgrade_building_wall_2"
+		}
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"100"
+			}
+		}
+		
 		"OnSpellStart"
 		{
 			"RunScript"
 			{
 				"ScriptFile"		"abilities/building.lua"
 				"Function"			"UpgradeBuilding"
-				"NextUpgrade"		"upgrade_building_wall_2"
 			}
 		}
 	}
@@ -229,8 +276,29 @@
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE"
 
 		"MaxLevel"					""
-		"AbilityGoldCost"			"250"
-
+		
+		"BuildingUpgrade"
+		{
+			"GoldCost"			"250"
+			"WoodCost"			"100"
+			"ReplaceUnit"		"npc_building_invisible_wall"
+		}
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"250"
+			}
+			
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"wood_cost"			"100"
+			}
+		}
+		
 		"OnSpellStart"
 		{
 			"FireEffect"
@@ -248,7 +316,6 @@
 			{
 				"ScriptFile"		"abilities/building.lua"
 				"Function"			"UpgradeBuilding"
-				"ReplaceUnit"		"npc_building_invisible_wall"
 			}
 		}
 		
@@ -263,17 +330,37 @@
 		"BaseClass"					"ability_datadriven"
 		"AbilityTextureName"		"attribute_bonus"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE"
-
+		
 		"MaxLevel"					""
-		"AbilityGoldCost"			"200"
-
+		
+		"BuildingUpgrade"
+		{
+			"GoldCost"			"200"
+			"WoodCost"			"100"
+			"NextUpgrade"		"upgrade_building_basic_tower_2"
+		}
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"200"
+			}
+			
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"wood_cost"			"100"
+			}
+		}
+		
 		"OnSpellStart"
 		{
 			"RunScript"
 			{
 				"ScriptFile"		"abilities/building.lua"
 				"Function"			"UpgradeBuilding"
-				"NextUpgrade"		"upgrade_building_basic_tower_2"
 			}
 		}
 	}
@@ -283,17 +370,37 @@
 		"BaseClass"					"ability_datadriven"
 		"AbilityTextureName"		"attribute_bonus"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE"
-
+		
 		"MaxLevel"					""
-		"AbilityGoldCost"			"400"
-
+		
+		"BuildingUpgrade"
+		{
+			"GoldCost"			"400"
+			"WoodCost"			"200"
+			"NextUpgrade"		"upgrade_building_basic_tower_3"
+		}
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"400"
+			}
+			
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"wood_cost"			"200"
+			}
+		}
+		
 		"OnSpellStart"
 		{
 			"RunScript"
 			{
 				"ScriptFile"		"abilities/building.lua"
 				"Function"			"UpgradeBuilding"
-				"NextUpgrade"		"upgrade_building_basic_tower_3"
 			}
 		}
 	}
@@ -303,17 +410,37 @@
 		"BaseClass"					"ability_datadriven"
 		"AbilityTextureName"		"attribute_bonus"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE"
-
+		
 		"MaxLevel"					""
-		"AbilityGoldCost"			"800"
-
+		
+		"BuildingUpgrade"
+		{
+			"GoldCost"			"800"
+			"WoodCost"			"400"
+			"NextUpgrade"		"upgrade_building_basic_tower_4"
+		}
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"800"
+			}
+			
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"wood_cost"			"400"
+			}
+		}
+		
 		"OnSpellStart"
 		{
 			"RunScript"
 			{
 				"ScriptFile"		"abilities/building.lua"
 				"Function"			"UpgradeBuilding"
-				"NextUpgrade"		"upgrade_building_basic_tower_4"
 			}
 		}
 	}
@@ -323,10 +450,30 @@
 		"BaseClass"					"ability_datadriven"
 		"AbilityTextureName"		"attribute_bonus"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE"
-
+		
 		"MaxLevel"					""
-		"AbilityGoldCost"			"1600"
-
+		
+		"BuildingUpgrade"
+		{
+			"GoldCost"			"1600"
+			"WoodCost"			"800"
+		}
+		
+		"AbilitySpecial"
+		{
+			"01"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"gold_cost"			"1600"
+			}
+			
+			"02"
+			{
+				"var_type"			"FIELD_INTEGER"
+				"wood_cost"			"800"
+			}
+		}
+		
 		"OnSpellStart"
 		{
 			"RunScript"

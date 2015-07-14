@@ -12,6 +12,12 @@ function SpawnWisp(keys)
 	
 	local caster = keys.caster
 	local player = caster:GetPlayerOwner()
+	
+	if not caster.passivesEnabled then
+		ErrorMessage("Building Not Complete", player)
+		return
+	end
+	
 	local playerId = caster:GetPlayerOwnerID()
 	local playerTeam = caster:GetTeamNumber()
 	local playerHero = player:GetAssignedHero()

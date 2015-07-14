@@ -30,10 +30,49 @@ function Build(keys)
 end
 
 function UpgradeBuilding(keys)
-	local currentAbility = keys.ability
-	BB:PrintH("Upgrading ability '" .. currentAbility:GetName() .. "'")
-	
 	local building = keys.caster
+	local ability = keys.ability
+	local player = building:GetPlayerOwner()
+	local result = _UpgradeBuilding(building, ability, player)
+	if result ~= nil then
+		ErrorMessage(result, player)
+	end
+end
+
+function _UpgradeBuilding(building, ability, player)
+	local abilityName = ability	:GetName()
+	BB:PrintH("Upgrading ability '" .. abilityName .. "'")
+	
+	-- Check if the building is built
+	if not building.passivesEnabled then
+	BB:Print("Building not complete", 1)
+		return "Building Not Complete"
+	end
+	
+	-- Check costs
+	local upgradeInfo = KV_Wrap(BuildingBuddy.abilities[abilityName])
+	if upgradeInfo ~= nil then
+		local playerId = player:GetPlayerID()
+		
+		local playerGold = PlayerResource:GetGold(playerId)
+		local goldCost = upgradeInfo:GetValue("GoldCost", "number", 0)
+		if goldCost > playerGold then
+		BB:Print("Not enough gold", 1)
+			return "Not Enough Gold"
+		end
+		
+		local playerWood = GetPlayerWood(playerId)
+		local woodCost = upgradeInfo:GetValue("WoodCost", "number", 0)
+		if woodCost > playerWood then
+			BB:Print("Not enough wood", 1)
+			return "Not Enough Wood"
+		end
+		
+		PlayerResource:ModifyGold(playerId, -goldCost, false, DOTA_ModifyGold_AbilityCost)
+		ChangePlayerWood(player, -woodCost)
+	end
+	
+	-- Start building
 	local buildingName = building:GetUnitName()
 	BB:Print("On building: " .. buildingName, 1)
 	
@@ -53,7 +92,7 @@ function UpgradeBuilding(keys)
 	BB:Print("Upgrade level: " .. tostring(building.upgradeLevel), 1)
 	
 	-- Check for a unit swap
-	local replaceUnit = keys.ReplaceUnit
+	local replaceUnit = upgradeInfo["ReplaceUnit"]
 	if replaceUnit ~= nil then
 		_ReplaceUnit(building, replaceUnit)
 		return
@@ -63,12 +102,12 @@ function UpgradeBuilding(keys)
 	_UpgradeBuildingInfo(building, unitInfo)
 	
 	-- Swap abilities if required
-	local noRemove = keys.NoRemove
+	local noRemove = upgradeInfo["NoRemove"]
 	if noRemove == nil or noRemove == false then
-		local index = currentAbility:GetAbilityIndex()
-		building:RemoveAbility(currentAbility:GetName())
+		local index = ability:GetAbilityIndex()
+		building:RemoveAbility(ability:GetName())
 		
-		local nextAbility = keys.NextUpgrade
+		local nextAbility = upgradeInfo["NextUpgrade"]
 		BB:Print("Next upgrade ability: " .. tostring(nextAbility), 1)
 		if nextAbility ~= nil then
 			building:AddAbility(nextAbility)
@@ -79,7 +118,7 @@ function UpgradeBuilding(keys)
 		end
 		
 		-- Add ability if required
-		local newAbilityName = keys.AddAbility
+		local newAbilityName = upgradeInfo["AddAbility"]
 		if newAbilityName ~= nil then
 			BB:Print("Adding ability: " .. tostring(newAbilityName), 1)
 			building:AddAbility(newAbilityName)
