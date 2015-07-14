@@ -311,7 +311,7 @@
 		
 		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
 		
-		"ItemCost"				"2000"
+		"ItemCost"				"1600"
 		"ItemPurchasable"		"1"
 		"ItemSellable"			"1"
 		"ItemDroppable"			"1"
@@ -476,7 +476,7 @@
     	"ItemPermanent"			"1"
     	"ItemDisassembleRule"	"DOTA_ITEM_DISASSEMBLE_NEVER"
 		
-		"ItemCost"				"800"
+		"ItemCost"				"600"
 		"ItemPurchasable"		"1"
 		"ItemSellable"			"1"
 		"ItemDroppable"			"1"
@@ -789,7 +789,7 @@
 		"ItemPermanent"			"1"
 		"ItemDisassembleRule"	"DOTA_ITEM_DISASSEMBLE_NEVER"
 		
-		"ItemCost"				"700"
+		"ItemCost"				"500"
 		"ItemPurchasable"		"1"
 		"ItemSellable"			"1"
 		"ItemDroppable"			"1"
@@ -1098,7 +1098,7 @@
 		"ItemPermanent"			"1"
 		"ItemDisassembleRule"	"DOTA_ITEM_DISASSEMBLE_NEVER"
 		
-		"ItemCost"				"600"
+		"ItemCost"				"500"
 		"ItemPurchasable"		"1"
 		"ItemSellable"			"1"
 		"ItemDroppable"			"1"

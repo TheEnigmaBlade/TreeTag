@@ -684,8 +684,10 @@
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
 		"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_TREE"
 		
-		"MaxLevel"					"4"
-		"AbilityCooldown"			"3 2 1 0.1"
+		"MaxLevel"					"7"
+		"RequiredLevel"				"-1"
+		"LevelsBetweenUpgrades"		"2"
+		"AbilityCooldown"			"3 2.5 2 1.5 1 0.5 0"
 		"AbilityManaCost"			"0"
 		"AbilityCastRange"			"220"
 

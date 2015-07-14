@@ -6,6 +6,11 @@
 	
 	"attribute_bonus"
 	{
+		"ID"					"5002"
+		"BaseClass"				"attribute_bonus"
+		"AbilityType"			"DOTA_ABILITY_TYPE_ATTRIBUTES"
+		"AbilityBehavior"		"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		
 		"AbilitySpecial"
 		{
 			"01"

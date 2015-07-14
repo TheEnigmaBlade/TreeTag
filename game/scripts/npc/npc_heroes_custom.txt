@@ -122,11 +122,11 @@
 		
 		"AttributePrimary"				"DOTA_ATTRIBUTE_STRENGTH"
 		"AttributeBaseStrength"			"0"						// Base strength
-		"AttributeStrengthGain"			"10"						// Strength bonus per level.
+		"AttributeStrengthGain"			"6"						// Strength bonus per level.
 		"AttributeBaseIntelligence" 	"0"							// Base intelligence
-		"AttributeIntelligenceGain" 	"0"							// Intelligence bonus per level.
+		"AttributeIntelligenceGain" 	"1"							// Intelligence bonus per level.
 		"AttributeBaseAgility"			"0"							// Base agility
-		"AttributeAgilityGain"			"0"							// Agility bonus per level.
+		"AttributeAgilityGain"			"1"							// Agility bonus per level.
 		
 		"BountyXP"					"0"
 		"BountyGoldMin"				"200"
