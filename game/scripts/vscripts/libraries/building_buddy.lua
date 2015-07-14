@@ -25,8 +25,11 @@ function BuildingBuddy:_CreateBuildingAbilityTable()
 	for name, ability in pairs(abilities) do
 		if IsTable(ability) then
 			local building = ability["Building"]
+			local upgrade = ability["BuildingUpgrade"]
 			if building ~= nil and IsTable(building) then
 				abilityTable[tostring(name)] = building
+			elseif upgrade ~= nil and IsTable(upgrade) then
+				abilityTable[tostring(name)] = upgrade
 			end
 		end
 	end

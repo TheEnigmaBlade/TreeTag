@@ -41,7 +41,7 @@
 		"MovementTurnRate"			"1.0"							// Turning rate.
 		
 		"StatusHealth"				"100000"						// Base health.
-		"StatusHealthRegen"			"100.0"						// Health regeneration rate.
+		"StatusHealthRegen"			"1000.0"						// Health regeneration rate.
 		"StatusMana"				"0"						// Base mana.
 		"StatusManaRegen"			"0"						// Mana regeneration rate.
 		

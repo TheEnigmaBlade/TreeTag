@@ -22,7 +22,7 @@
 		"AbilityCastPoint"				"0.3"
 		"AbilityCastRange"				"0"
 		"AbilityCooldown"				"60"
-		"AbilityManaCost"				"120 125 130"
+		"AbilityManaCost"				"100"
 		
 		"AbilityDamage"					"0"
 		

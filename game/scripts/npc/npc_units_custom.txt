@@ -74,9 +74,9 @@
 		"AttackDamageMax"			"0"
 
 		// Bounty
-		"BountyXP"					"10"
-		"BountyGoldMin"				"15.0"
-		"BountyGoldMax"				"15.0"
+		"BountyXP"					"15"
+		"BountyGoldMin"				"50.0"
+		"BountyGoldMax"				"60.0"
 
 		// Bounds
 		"RingRadius"				"90"
@@ -144,9 +144,9 @@
 		"AttackDamageMax"			"0"
 
 		// Bounty
-		"BountyXP"					"5"
-		"BountyGoldMin"				"0.0"
-		"BountyGoldMax"				"0.0"
+		"BountyXP"					"10"
+		"BountyGoldMin"				"15.0"
+		"BountyGoldMax"				"15.0"
 
 		// Bounds
 		"HullRadius"				"60"
@@ -210,8 +210,8 @@
 
 		// Bounty
 		"BountyXP"					"30"
-		"BountyGoldMin"				"0.0"
-		"BountyGoldMax"				"0.0"
+		"BountyGoldMin"				"20.0"
+		"BountyGoldMax"				"30.0"
 
 		// Bounds
 		"HullRadius"				"90"
@@ -272,9 +272,9 @@
 		"AttackDamageMax"			"0"
 
 		// Bounty
-		"BountyXP"					"35"
-		"BountyGoldMin"				"5.0"
-		"BountyGoldMax"				"5.0"
+		"BountyXP"					"50"
+		"BountyGoldMin"				"40.0"
+		"BountyGoldMax"				"50.0"
 
 		// Bounds
 		"HullRadius"				"90"
@@ -367,9 +367,9 @@
 		"AttackRate4"				"1.2"
 
 		// Bounty
-		"BountyXP"					"25"
-		"BountyGoldMin"				"10.0"
-		"BountyGoldMax"				"10.0"
+		"BountyXP"					"30"
+		"BountyGoldMin"				"75.0"
+		"BountyGoldMax"				"75.0"
 
 		// Bounds
 		"HullRadius"				"80"
@@ -431,17 +431,17 @@
 
 		// Bounty
 		"BountyXP"					"50"
-		"BountyGoldMin"				"20"
-		"BountyGoldMax"				"20"
+		"BountyGoldMin"				"125"
+		"BountyGoldMax"				"125"
 
 		// Bounds
 		"RingRadius"				"140"
 		"HullRadius"				"120"
 
 		// Building Cost Stats
-		"GoldCost"					"200"
+		"GoldCost"					"250"
 		//"LumberCost"				"50"
-		"BuildTime"					"4"
+		"BuildTime"					"12"
 
 		// Movement
 		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_NONE"
@@ -502,8 +502,8 @@
 
 		// Bounty
 		"BountyXP"					"10"
-		"BountyGoldMin"				"25"
-		"BountyGoldMax"				"25"
+		"BountyGoldMin"				"20"
+		"BountyGoldMax"				"20"
 		
 		// Bounds
 		"RingRadius"				"40"

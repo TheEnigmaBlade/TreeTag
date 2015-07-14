@@ -1,4 +1,4 @@
-DEBUG_MODE = true				-- Note to self: disable before release
+DEBUG_MODE = false				-- Note to self: disable before release
 BAREBONES_DEBUG_SPEW = false
 
 if GameMode == nil then
@@ -35,6 +35,7 @@ function GameMode:InitGameMode()
 
 	-- Commands can be registered for debugging purposes or as functions that can be called by the custom UI
 	Convars:RegisterCommand("give_gold", Dynamic_Wrap(GameMode, "CheatGoldCommand"), "Gold cheat", FCVAR_CHEAT)
+	Convars:RegisterCommand("give_wood", Dynamic_Wrap(GameMode, "CheatWoodCommand"), "Wood cheat", FCVAR_CHEAT)
 	Convars:RegisterCommand("explore", Dynamic_Wrap(GameMode, "ExplorationCommand"), "Give current hero exploration mode", FCVAR_CHEAT)
 	Convars:RegisterCommand("reset_cooldowns", Dynamic_Wrap(GameMode, "ResetCooldownsCommand"), "Reset current hero cooldowns", FCVAR_CHEAT)
 	Convars:RegisterCommand("levelup", Dynamic_Wrap(GameMode, "LevelUpCommand"), "Level-up current hero", FCVAR_CHEAT)
@@ -179,13 +180,14 @@ function GameMode:OnHeroRespawn(hero)
 	if team == DOTA_TEAM_GOODGUYS then
 		GameMode.deadGoodGuys = GameMode.deadGoodGuys - 1
 		local playerGold = PlayerResource:GetGold(playerId)
-		local hero = PlayerResource:ReplaceHeroWith(playerId, HERO_DUMMY, playerGold, 0)
+		hero = PlayerResource:ReplaceHeroWith(playerId, HERO_DUMMY, playerGold, 0)
 		InitDummyHero(hero)
 	else
 		GameMode.deadBadGuys = GameMode.deadBadGuys - 1
 	end
 	
 	UnitBuddy:InitUnit(hero)
+	FindClearSpaceForUnit(hero, hero:GetOrigin(), true)
 end
 
 -- Start the game
@@ -298,22 +300,23 @@ function GameMode:OnEntityHurt(keys)
 	local entVictim = EntIndexToHScript(keys.entindex_killed)
 	
 	if entCause ~= nil and entVictim:IsAlive() then
+		local causePlayerId = entCause:GetPlayerOwnerID()
+		local victimPlayerId = entVictim:GetPlayerOwnerID()
+		
 		if entVictim:IsRealHero() then
 			-- Check if victim is a dummy and should be revived
 			local victimName = entVictim:GetUnitName()
 			local causeTeam = entCause:GetTeamNumber()
 			if victimName == HERO_DUMMY then
 				if causeTeam == DOTA_TEAM_GOODGUYS then
-					local playerGold = PlayerResource:GetGold(playerId)
-					PlayerResource:ReplaceHeroWith(playerId, HERO_DUMMY, playerGold, 0)
+					local playerGold = PlayerResource:GetGold(victimPlayerId)
+					PlayerResource:ReplaceHeroWith(victimPlayerId, HERO_DUMMY, playerGold, 0)
 				else
-					entCause:Kill(nil, entCause)
+					--entCause:Kill(nil, entCause)
 				end
 			end
 		else
 			-- Check if victim is a building and attacker is its owner
-			local causePlayerId = entCause:GetPlayerOwnerID()
-			local victimPlayerId = entVictim:GetPlayerOwnerID()
 			--local causePlayerId
 			--if entCause[GetPlayerID] ~= nil then
 				-- Attacked by hero
@@ -344,7 +347,8 @@ function GameMode:OnMoneyChanged(keys)
 	--TODO: maybe add gold next to wood in HUD
 end
 
--- Message utils
+--[[ UI INTERACTION ]]
+
 function GoodGuyMessage(msg, length)
 	Notifications:TopToTeam(DOTA_TEAM_GOODGUYS, {text=msg, duration=length, class="GoodGuyMessage"})
 end
@@ -359,13 +363,22 @@ end
 
 --[[ DEBUG/CHEAT COMMANDS ]]
 
--- This is an example console command
 function GameMode:CheatGoldCommand()
 	local cmdPlayer = Convars:GetCommandClient()
 	if cmdPlayer then
 		local playerId = cmdPlayer:GetPlayerID()
 		if playerId ~= nil and playerId ~= -1 then
 			PlayerResource:ModifyGold(playerId, 1000, false, DOTA_ModifyGold_CheatCommand)
+		end
+	end
+end
+
+function GameMode:CheatWoodCommand()
+	local cmdPlayer = Convars:GetCommandClient()
+	if cmdPlayer then
+		local playerId = cmdPlayer:GetPlayerID()
+		if playerId ~= nil and playerId ~= -1 then
+			ChangePlayerWood(cmdPlayer, 500)
 		end
 	end
 end

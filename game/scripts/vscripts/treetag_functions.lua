@@ -48,6 +48,7 @@ function ReturnDummyToCenter(keys)
 			GameMode:Print("Player: " .. tostring(playerId), 1)
 			
 			entity:SetOrigin(Vector(0, 0, 0))
+			FindClearSpaceForUnit(entity, entity:GetOrigin(), true)
 		end
 	end
 end
